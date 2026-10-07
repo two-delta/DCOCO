@@ -9,6 +9,13 @@ top candidates at every position and scores how well neighbouring candidates fit
 in one small batched pass. A greedy walk over those scores then picks the draft. Intra-block
 dependencies come back, and the cost is a few percent of the drafting cycle.
 
+<p align="center">
+  <img src="assets/dcoco_figure.png" alt="DCOCO overview: (a) parallel correction scores every adjacent candidate pair in one batched pass; (b) prefix-first selection walks the scores slot by slot" width="100%">
+</p>
+
+**(a)** DFlash drafts every slot in one pass; DCOCO scores all (B−1)K² candidate transitions in parallel from candidate representations and adjacent-slot pair states.
+**(b)** A prefix-first walk then picks each slot's best continuation of the chosen predecessor, instead of DFlash's independent top-1.
+
 ## Highlights
 
 - **Fastest in every configuration we evaluated:** four verifiers, ten benchmarks, greedy and
