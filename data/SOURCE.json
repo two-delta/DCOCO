@@ -1,0 +1,44 @@
+{
+  "source": "https://github.com/deepseek-ai/DeepSpec/tree/main/eval_datasets",
+  "commit": "0a03e19e1c57 (2026-06-27)",
+  "license": "MIT",
+  "note": "Unmodified DeepSpec eval files: the DCOCO paper's prompt pool (td-speculators prepare_evalsets.py --source deepspec).",
+  "files": {
+    "aime25.jsonl": {
+      "sha256": "b8835996839caa1d982c5bb9ecaeca636424f0b8ed9f33a40b084feb1c1766d0",
+      "rows": 30
+    },
+    "alpaca.jsonl": {
+      "sha256": "c1f1623ac08e4c4f024604bb2689a024963eb7eb9dbbc29e57dda5a11d87e07b",
+      "rows": 52002
+    },
+    "arena-hard-v2.jsonl": {
+      "sha256": "e5fcce94ffb1a2ef2082b5c63ac36608f2b7faf00da13ecb94ce2adc649b7b91",
+      "rows": 750
+    },
+    "gsm8k.jsonl": {
+      "sha256": "63330a20a17f416fdfca978ebcd5124f8da5546affb3a079b65a6e8daf42b41f",
+      "rows": 1319
+    },
+    "humaneval.jsonl": {
+      "sha256": "7aaed6a3987007ecee4851ee4572fde214aa2a36ae83fa21be9c5f443aa71675",
+      "rows": 164
+    },
+    "livecodebench.jsonl": {
+      "sha256": "40ed536492f331ac27b3b68506072366ca1d3a304b92c31d822574e778c87318",
+      "rows": 1055
+    },
+    "math500.jsonl": {
+      "sha256": "4f530d9d3126dca41c12a96e78ec0dd460b7202052ba86101c4da159cea33aac",
+      "rows": 500
+    },
+    "mbpp.jsonl": {
+      "sha256": "019b981f7122e39ce58866cf93f4206511c72532cb537bbaf298753a0f128ba7",
+      "rows": 257
+    },
+    "mt-bench.jsonl": {
+      "sha256": "df05defbcea350dff39f7d2996a7cba8a029e6e06069dfcdab11ceb998d743b0",
+      "rows": 80
+    }
+  }
+}

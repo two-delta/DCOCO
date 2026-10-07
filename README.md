@@ -1,1 +1,118 @@
-# DCOCO
+# DCOCO: Contextual Correction of Parallel Drafts for Speculative Decoding
+
+**DCOCO** (DFlash Contextual Corrector) makes parallel drafters draft like autoregressive ones,
+without giving up their speed.
+
+Diffusion-style drafters such as DFlash propose a whole block of tokens in a single pass, but
+each position is predicted without seeing which tokens were chosen before it. DCOCO keeps the
+top candidates at every position and scores how well neighbouring candidates fit together, all
+in one small batched pass. A greedy walk over those scores then picks the draft. Intra-block
+dependencies come back, and the cost is a few percent of the drafting cycle.
+
+## Highlights
+
+- **Fastest in every configuration we evaluated:** four verifiers, ten benchmarks, greedy and
+  sampled decoding, with and without extended thinking.
+- **Up to 6.6× faster than vanilla decoding**, and 3.62× on average on Qwen3-8B (greedy, thinking
+  off), against 2.95× for DFlash.
+- **Holds up under load:** 6–23% faster than the strongest competing method at 4–32 concurrent
+  requests, where the sequential correctors drop below plain DFlash.
+- **Ready to serve:** a vLLM image and released drafters, so `vllm serve` is all it takes.
+
+## Results
+
+Average speedup over vanilla decoding across the ten evaluation suites (concurrency 1, one B200
+per system):
+
+| Verifier | Thinking | DFlash | Domino | DSpark | **DCOCO** |
+|---|---|---|---|---|---|
+| Qwen3-4B | off | 2.98× / 2.52× | 3.27× / 2.71× | 2.66× / 2.28× | **3.62× / 2.95×** |
+| Qwen3-4B | on | 2.08× / 1.87× | 2.17× / 1.93× | 1.85× / 1.69× | **2.38× / 2.12×** |
+| Qwen3-8B | off | 2.95× / 2.45× | 3.16× / 2.53× | 2.88× / 2.37× | **3.62× / 2.87×** |
+| Qwen3-8B | on | 1.95× / 1.78× | 1.97× / 1.79× | 1.83× / 1.68× | **2.26× / 2.03×** |
+| Qwen3-Coder-30B-A3B | off | 1.89× / 1.67× | 1.94× / 1.67× | 1.84× / 1.62× | **2.31× / 1.98×** |
+| Llama-3.1-8B | off | 3.03× / 1.75× | 3.24× / 1.79× | 3.01× / 1.65× | **3.75× / 1.93×** |
+
+Each cell is T=0 / T=1. Per-benchmark throughput and acceptance lengths are in the paper's
+appendix.
+
+## Released checkpoints
+
+| Target model | DCOCO drafter | Block size |
+|---|---|---|
+| `Qwen/Qwen3-8B` | `gs://twodelta-b200-data/talg/q3-8b` | 15 |
+| `Qwen/Qwen3-4B` | `gs://twodelta-b200-data/talg/q3-4b` | 15 |
+
+The checkpoints are in vLLM's native format, ready to serve as-is.
+
+## Installation
+
+DCOCO runs in vLLM. The image adds it to the official `vllm/vllm-openai:v0.31.0` release:
+
+```bash
+git clone git@github.com:two-delta/DCOCO.git && cd DCOCO
+docker build -t dcoco:vllm-v0.31.0 docker/
+```
+
+## Quick start
+
+Download a drafter and serve it with its target model:
+
+```bash
+gcloud storage cp -r gs://twodelta-b200-data/talg/q3-8b drafters/
+
+docker run --gpus '"device=0"' --ipc=host -p 8000:8000 \
+  -v ~/.cache/huggingface:/root/.cache/huggingface -v $PWD/drafters/q3-8b:/drafter:ro \
+  dcoco:vllm-v0.31.0 Qwen/Qwen3-8B \
+  --speculative-config '{"method": "dflash", "model": "/drafter", "num_speculative_tokens": 15}'
+```
+
+Then query it like any OpenAI-compatible server:
+
+```bash
+curl localhost:8000/v1/chat/completions -H 'content-type: application/json' -d '{
+  "model": "Qwen/Qwen3-8B",
+  "messages": [{"role": "user", "content": "How many positive whole-number divisors does 196 have?"}],
+  "chat_template_kwargs": {"enable_thinking": false}
+}'
+```
+
+## Evaluation
+
+Point the benchmark at a running server:
+
+```bash
+python3 scripts/benchmark.py --endpoint http://localhost:8000 --out results/qwen3-8b
+```
+
+It runs the paper's ten suites with the paper's settings:
+
+- **Suites:** MATH-500, AIME-25, GSM8K, HumanEval, MBPP, LiveCodeBench, MT-Bench, Arena-Hard-v2,
+  Alpaca and SPEED-Bench.
+- **Settings:** greedy decoding plus three sampling seeds, max 2048 new tokens, concurrency 1.
+
+It prints throughput and acceptance length per suite. Prompts come from DeepSpec's evaluation
+sets in `data/`; by default the benchmark uses the paper's 128 prompts per suite, and `--rows all`
+uses every prompt.
+
+## Acknowledgements
+
+DCOCO builds on [DFlash](https://github.com/z-lab/dflash), and we compare against
+[Domino](https://github.com/jianuo-huang/Domino) and
+[DSpark](https://github.com/deepseek-ai/DeepSpec). Our evaluation prompts come from
+[DeepSpec](https://github.com/deepseek-ai/DeepSpec) and NVIDIA's
+[SPEED-Bench](https://huggingface.co/datasets/nvidia/SPEED-Bench), and serving is built on
+[vLLM](https://github.com/vllm-project/vllm). We thank their authors and maintainers.
+
+## Citation
+
+If you find DCOCO useful, please cite:
+
+```bibtex
+@article{eisenstadt2026dcoco,
+  title  = {Contextual Correction of Parallel Drafts for Speculative Decoding},
+  author = {Eisenstadt, Roy and Lidar, Harel and Gonen, Tal and Luxembourg, Omer and
+            Zimerman, Itamar and Wolf, Lior and David, Eli and Naiman, Ilan},
+  year   = {2026}
+}
+```
