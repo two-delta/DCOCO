@@ -47,8 +47,8 @@ appendix.
 
 | Target model | DCOCO drafter | Block size |
 |---|---|---|
-| `Qwen/Qwen3-8B` | `gs://twodelta-b200-data/talg/q3-8b` | 15 |
-| `Qwen/Qwen3-4B` | `gs://twodelta-b200-data/talg/q3-4b` | 15 |
+| `Qwen/Qwen3-8B` | [`TD-Labs/Qwen3.5-8B-DCOCO`](https://huggingface.co/TD-Labs/Qwen3.5-8B-DCOCO) | 15 |
+| `Qwen/Qwen3-4B` | [`TD-Labs/Qwen3.5-4B-DCOCO`](https://huggingface.co/TD-Labs/Qwen3.5-4B-DCOCO) | 15 |
 
 The checkpoints are in vLLM's native format, ready to serve as-is.
 
@@ -63,15 +63,13 @@ docker build -t dcoco:vllm-v0.31.0 docker/
 
 ## Quick start
 
-Download a drafter and serve it with its target model:
+Serve a drafter with its target model; vLLM downloads both from Hugging Face:
 
 ```bash
-gcloud storage cp -r gs://twodelta-b200-data/talg/q3-8b drafters/
-
 docker run --gpus '"device=0"' --ipc=host -p 8000:8000 \
-  -v ~/.cache/huggingface:/root/.cache/huggingface -v $PWD/drafters/q3-8b:/drafter:ro \
+  -v ~/.cache/huggingface:/root/.cache/huggingface -e HF_TOKEN \
   dcoco:vllm-v0.31.0 Qwen/Qwen3-8B \
-  --speculative-config '{"method": "dflash", "model": "/drafter", "num_speculative_tokens": 15}'
+  --speculative-config '{"method": "dflash", "model": "TD-Labs/Qwen3.5-8B-DCOCO", "num_speculative_tokens": 15}'
 ```
 
 Then query it like any OpenAI-compatible server:
