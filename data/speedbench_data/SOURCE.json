@@ -1,0 +1,50 @@
+{
+  "source": "https://github.com/NVIDIA-NeMo/Skills/blob/5ac8609a56ac941540b10c92e68d556e6343cd4c/nemo_skills/dataset/speed-bench/prepare.py",
+  "note": "SPEED-Bench qualitative split (11 categories x 80), built with NVIDIA's prepare.py (--config qualitative); <category>.jsonl holds each row's first user turn as {\"prompt\": ...}, read as-is by scripts/benchmark.py. No placeholder rows. Prompts come from third-party datasets under their own terms; see the upstream script for the sources.",
+  "files": {
+    "coding.jsonl": {
+      "sha256": "a3aaa49659aed156d8dcbf4f2aa67f9f7e7158d55907d62febf1ac2ebd1f1a82",
+      "rows": 80
+    },
+    "humanities.jsonl": {
+      "sha256": "8cf2862eedea01a23cf1e43e746ab13d235a034a577a98a6f63323180ddd7a08",
+      "rows": 80
+    },
+    "math.jsonl": {
+      "sha256": "2aad60ac0b5341853b2dfbd7ba8f9e2137218d2ce13c01de422802fda3e8b544",
+      "rows": 80
+    },
+    "multilingual.jsonl": {
+      "sha256": "9487ae3e21286de704049868dc6d948c8247d9e1a643ad499cabfe0565fb374c",
+      "rows": 80
+    },
+    "qa.jsonl": {
+      "sha256": "92c282560a346ee2688f746be7257be4a21df595f93b00379e4a0edbc3be34d4",
+      "rows": 80
+    },
+    "rag.jsonl": {
+      "sha256": "9a513f2e6c2e55e755e15a4c4ccd61f5cef1ebb11c137afc189c63734945912b",
+      "rows": 80
+    },
+    "reasoning.jsonl": {
+      "sha256": "4b15160ca67ec3778e3f040775fd3adadd53b14456fcbc1a7dce5b919989fd3f",
+      "rows": 80
+    },
+    "roleplay.jsonl": {
+      "sha256": "ea85948ce7f57c30c4ec415542d0d91357a5512af053ddf05b9731d0aa1d0bbd",
+      "rows": 80
+    },
+    "stem.jsonl": {
+      "sha256": "565a8d94bf264819e45c4061a5365adb131bbcd2ececb8a613dc5cab28fef9b3",
+      "rows": 80
+    },
+    "summarization.jsonl": {
+      "sha256": "fa13cc1ab716848071469f4405f235970bb82c5461ac2e7a39931b6e8ba8777f",
+      "rows": 80
+    },
+    "writing.jsonl": {
+      "sha256": "2aa0582ae28d0da6aacb34a192f575aab2d5085bb3a3358206c04c1a5e43849b",
+      "rows": 80
+    }
+  }
+}

@@ -3,5 +3,3 @@ logs/
 .venv/
 .cache/
 __pycache__/
-# SPEED-Bench is third-party data built locally; never commit it
-data/speedbench_data/

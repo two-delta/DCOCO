@@ -28,10 +28,6 @@ from suite import (CONFIGS, DATASETS, ROOT, SPEEDBENCH, SPEEDBENCH_CATEGORIES, j
 from summary import summarize
 from vllm_bench import VllmCli, run_job
 
-# Rows NVIDIA's prepare.py leaves behind when a source could not be fetched.
-PLACEHOLDER_MARKERS = ("FULL BENCHMARK DATA SHOULD BE FETCHED FROM THE SOURCE", "{article}")
-
-
 def log(message: str) -> None:
     print(f"[{time.strftime('%H:%M:%S')}] {message}", flush=True)
 
@@ -43,32 +39,6 @@ def served_model(endpoint: str) -> str:
             return json.load(r)["data"][0]["id"]
     except OSError as e:
         sys.exit(f"endpoint {endpoint} is not ready: {e}")
-
-
-def prepare_speedbench(speedbench_dir: Path, allow_placeholders: bool) -> None:
-    """Write <category>.jsonl ({"prompt": ...}) from SPEED-Bench's per-category files.
-
-    SPEED-Bench is third-party data and is not committed: build it with NVIDIA's prepare.py
-    (needs an HF token with access to the gated cais/hle) and split it per category, so that
-    <dir>/qualitative_<category>.jsonl ({"turns": ...}) exist. A build that could not fetch some
-    sources leaves placeholder rows; those are refused unless explicitly allowed (the paper's
-    own SPEED-Bench snapshot has 494 of them, so reproducing the paper needs the override).
-    """
-    for category in SPEEDBENCH_CATEGORIES:
-        source = speedbench_dir / f"qualitative_{category}.jsonl"
-        if not source.exists():
-            sys.exit(f"missing {source}: build SPEED-Bench qualitative into {speedbench_dir}")
-        prompts = []
-        for line in source.read_text().split("\n"):
-            if line.strip():
-                turns = json.loads(line)["turns"]
-                prompts.append(turns[0] if isinstance(turns, list) else turns)
-        bad = sum(any(m in p for m in PLACEHOLDER_MARKERS) for p in prompts)
-        if bad and not allow_placeholders:
-            sys.exit(f"{source}: {bad}/{len(prompts)} placeholder prompts; rebuild the data "
-                     "(or pass --allow-speedbench-placeholders to reproduce the paper)")
-        target = speedbench_dir / f"{category}.jsonl"
-        target.write_text("".join(json.dumps({"prompt": p}) + "\n" for p in prompts))
 
 
 def parse_args() -> argparse.Namespace:
@@ -85,9 +55,8 @@ def parse_args() -> argparse.Namespace:
                    help="prompts per suite: a number (default 128, the paper's) or 'all'")
     p.add_argument("--seed", type=int, default=1234,
                    help="row-sampling seed (default 1234, the paper's)")
-    p.add_argument("--speedbench-dir", type=Path, default=ROOT / "data" / "speedbench_data")
-    p.add_argument("--allow-speedbench-placeholders", action="store_true",
-                   help="accept placeholder SPEED-Bench rows (only to reproduce the paper)")
+    p.add_argument("--speedbench-dir", type=Path, default=ROOT / "data" / "speedbench_data",
+                   help="SPEED-Bench <category>.jsonl files (default: %(default)s)")
     runner = p.add_mutually_exclusive_group()
     runner.add_argument("--image", default="dcoco:vllm-v0.31.0",
                         help="run `vllm bench serve` in this image (default)")
@@ -103,8 +72,10 @@ def parse_args() -> argparse.Namespace:
 def main() -> None:
     args = parse_args()
     model = served_model(args.endpoint)
-    if SPEEDBENCH in args.datasets:
-        prepare_speedbench(args.speedbench_dir, args.allow_speedbench_placeholders)
+    missing = [c for c in SPEEDBENCH_CATEGORIES if SPEEDBENCH in args.datasets
+               and not (args.speedbench_dir / f"{c}.jsonl").exists()]
+    if missing:
+        sys.exit(f"SPEED-Bench files missing from {args.speedbench_dir}: {', '.join(missing)}")
     args.out.mkdir(parents=True, exist_ok=True)
     prompt_dir = write_prompt_files(args.out, args.rows, args.seed)
     cli = VllmCli(None if args.vllm_bin else args.image, args.vllm_bin,
