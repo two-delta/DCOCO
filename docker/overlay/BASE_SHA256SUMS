@@ -1,0 +1,5 @@
+057b0a7f80db28522ee46b41f9ae5bd7a0c1998a08e111c5a6ddcb8c08f07f8d  vllm/config/vllm.py
+7f1d56e2f4c24ff7a949b0d4e796d6af70fa85a2b97c224652949f8d993dcc22  vllm/model_executor/models/registry.py
+a771269513fc2f17451df69a1bbd2a8de758fd035f496d2c60cd406941eb144e  vllm/transformers_utils/configs/eagle.py
+61b3acba401c1079039496f72445c28bbc6119d0b508f9a75d231f305aa1b7e8  vllm/v1/worker/gpu/spec_decode/__init__.py
+36d5bccd28eb64de1af348cbdd4d630bfd7d781479be472570e14c0865826058  vllm/v1/worker/gpu/spec_decode/dflash/speculator.py
