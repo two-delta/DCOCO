@@ -108,16 +108,3 @@ DCOCO builds on [DFlash](https://github.com/z-lab/dflash), and we compare agains
 [DeepSpec](https://github.com/deepseek-ai/DeepSpec) and NVIDIA's
 [SPEED-Bench](https://huggingface.co/datasets/nvidia/SPEED-Bench), and serving is built on
 [vLLM](https://github.com/vllm-project/vllm). We thank their authors and maintainers.
-
-## Citation
-
-If you find DCOCO useful, please cite:
-
-```bibtex
-@article{eisenstadt2026dcoco,
-  title  = {Contextual Correction of Parallel Drafts for Speculative Decoding},
-  author = {Eisenstadt, Roy and Lidar, Harel and Gonen, Tal and Luxembourg, Omer and
-            Zimerman, Itamar and Wolf, Lior and David, Eli and Naiman, Ilan},
-  year   = {2026}
-}
-```
