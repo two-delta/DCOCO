@@ -1,4 +1,4 @@
-# DCOCO: Contextual Correction of Parallel Drafts for Speculative Decoding
+# 🥥 DCOCO: Contextual Correction of Parallel Drafts for Speculative Decoding
 
 **[DCOCO](https://arxiv.org/abs/2410.19538)** (DFlash Contextual Corrector) makes parallel drafters draft like autoregressive ones,
 without giving up their speed.
