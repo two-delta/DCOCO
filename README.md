@@ -1,6 +1,6 @@
 # 🥥 DCOCO: Contextual Correction of Parallel Drafts for Speculative Decoding
 
-**[DCOCO](https://arxiv.org/abs/2410.19538)** (DFlash Contextual Corrector) makes parallel drafters draft like autoregressive ones,
+**[DCOCO](https://arxiv.org/abs/2610.12570)** (DFlash Contextual Corrector) makes parallel drafters draft like autoregressive ones,
 without giving up their speed.
 
 Diffusion-style drafters such as DFlash propose a whole block of tokens in a single pass, but
