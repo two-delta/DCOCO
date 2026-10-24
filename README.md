@@ -110,8 +110,8 @@ DCOCO builds on [DFlash](https://github.com/z-lab/dflash), and we compare agains
 [vLLM](https://github.com/vllm-project/vllm). We thank their authors and maintainers.
 
 ```bibtex
-@misc{eisenstadt2026contextualcorrectionparalleldraftsfor,
-      title={Contextual Correction of Parallel Draftsfor Speculative Decoding}, 
+@misc{eisenstadt2026contextualcorrectionparalleldrafts,
+      title={Contextual Correction of Parallel Drafts for Speculative Decoding}, 
       author={Roy Eisenstadt and Harel Lidar and Tal Gonen and Omer Luxembourg and Itamar Zimerman and Lior Wolf and Eli David and Ilan Naiman},
       year={2026},
       eprint={2610.12570},
